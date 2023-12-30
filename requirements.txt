@@ -1,3 +1,2 @@
 streamlit
 google-generativeai
-python-dotenv
