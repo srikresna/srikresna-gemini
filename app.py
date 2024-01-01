@@ -35,7 +35,7 @@ st.set_page_config(page_title="Gemini Chatbot",page_icon=":gem:")
 with st.sidebar:
     st.title("Gemini Setting")
     
-    api_key = st.text_input("API key")
+    api_key = st.text_input("API key", placeholder="if you have one.")
     if api_key:
         genai.configure(api_key=api_key)
     else:
