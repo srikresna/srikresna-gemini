@@ -4,24 +4,6 @@ import streamlit as st
 import google.generativeai as genai
 
 temperature = 0.9
-safety_settings = [
-  {
-    "category": "HARM_CATEGORY_HARASSMENT",
-    "threshold": "BLOCK_ONLY_HIGH"
-  },
-  {
-    "category": "HARM_CATEGORY_HATE_SPEECH",
-    "threshold": "BLOCK_ONLY_HIGH"
-  },
-  {
-    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-    "threshold": "BLOCK_ONLY_HIGH"
-  },
-  {
-    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-    "threshold": "BLOCK_ONLY_HIGH"
-  },
-]
 
 generation_config = {
   "temperature": temperature,
@@ -63,8 +45,7 @@ with st.sidebar:
 def get_response(messages, model="gemini-pro"):
     model = genai.GenerativeModel(model)
     res = model.generate_content(messages, 
-                                 generation_config=generation_config, 
-                                 safety_settings=safety_settings)
+                                 generation_config=generation_config)
     return res
 
 if "messages" not in st.session_state:
