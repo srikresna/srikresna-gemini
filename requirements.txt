@@ -1,2 +1,7 @@
 streamlit
 google-generativeai
+langchain
+pyPDF2
+chromadb
+faiss-cpu
+langchain_google_genai
