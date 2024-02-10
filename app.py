@@ -14,10 +14,10 @@ generation_config = {
     "max_output_tokens": 99998,
 }
 
-st.set_page_config(page_title="Chat with AI", page_icon=":gem:")
+st.set_page_config(page_title="Gemini Chatbot", page_icon=":gem:")
 
 with st.sidebar:
-    st.title("Chat Setting")
+    st.title("Gemini Setting")
 
     api_key = st.text_input("API key", placeholder="if you have one.")
     if api_key:
@@ -27,15 +27,13 @@ with st.sidebar:
             genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
         else:
             st.error("Missing API key.")
-
-    select_feature = st.selectbox(
-        "Select feature", ["gemini-pro", "gemini-pro-vision"])
-
+    select_model = st.selectbox(
+        "Select model", ["gemini-pro", "gemini-pro-vision"])
     temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.9, 0.1)
     st.caption(
         "Temperature controls the randomness of the model. Lower temperature results in less randomness.")
 
-    if select_feature == "gemini-pro-vision":
+    if select_model == "gemini-pro-vision":
         uploaded_image = st.file_uploader(
             "upload image",
             label_visibility="collapsed",
@@ -61,14 +59,14 @@ if "messages" not in st.session_state:
 messages = st.session_state["messages"]
 
 # The vision model gemini-pro-vision is not optimized for multi-turn chat.
-st.header("Chat with AI 🤖")
-st.write("""
-         Here you can chat with the AI model and upload images to generate captions. 
-         If you have an API key, you can input it in the sidebar. If you don't have one, you can still chat with the provided API key.
-         """)
+st.header("Gemini LLM Chatbot🎈")
+st.write("This is a Gemini LLM Chatbot. This app is powered by Google's GEMINI Generative AI models. This app is built using Streamlit and hosted on Streamlit Share.")
+st.markdown("""
+    App built by [srikresna](https://github.com/srikresna) using [Streamlit](https://streamlit.io) and hosted on [Streamlit Share](https://share.streamlit.io).
+""")
 
 # Initialize session state for chat history if it doesn't exist
-if messages and select_feature != "gemini-pro" and select_feature != "gemini-pro-vision":
+if messages and select_model != "gemini-pro-vision":
     for item in messages:
         role, parts = item.values()
         if role == "user":
@@ -83,7 +81,7 @@ if chat_message:
     st.chat_message("user").markdown(chat_message)
     res_area = st.chat_message("assistant").markdown("...")
 
-    if select_feature == "image-captioning":
+    if select_model == "gemini-pro-vision":
         if "image_bytes" in globals():
             vision_message = [chat_message,
                               Image.open(io.BytesIO(image_bytes))]
@@ -111,7 +109,6 @@ if chat_message:
             except Exception as e:
                 logging.error(e)
                 st.error("Error occured. Please refresh your page and try again.")
-
     else:
         messages.append(
             {"role": "user", "parts":  [chat_message]},
@@ -122,12 +119,11 @@ if chat_message:
             if "API key not valid" in str(e):
                 st.error("API key not valid. Please pass a valid API key.")
             else:
-                st.error(
-                    "An error occurred. Please refresh your page and try again.")
+                st.error("An error occurred. Please refresh your page and try again.")
         except Exception as e:
             logging.error(e)
             st.error("Error occured. Please refresh your page and try again.")
-
+    
     if res is not None:
         res_text = ""
         for chunk in res:
@@ -135,9 +131,8 @@ if chat_message:
                 res_text += chunk.text
             if res_text == "":
                 res_text = "unappropriate words"
-                st.error(
-                    "Your words violate the rules that have been set. Please try again!")
+                st.error("Your words violate the rules that have been set. Please try again!")
         res_area.markdown(res_text)
 
-        if select_feature != "gemini-pro-vision":
+        if select_model != "gemini-pro-vision":
             messages.append({"role": "model", "parts": [res_text]})
